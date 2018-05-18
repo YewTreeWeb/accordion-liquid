@@ -1,0 +1,65 @@
+{% comment %} Capture the font-awesome version select {% endcomment %}
+{% capture icon_class %}
+  {% if section.settings.fa_version == 5 %}
+    {{ section.settings.fa_type }}
+  {% else %}
+    fa
+  {% endif %}
+{% endcapture %}
+{% comment %} Capture the font-awesome 5 type {% endcomment %}
+{% capture icon_type %}
+  {% if articles and forloop.index == 2 or blocks and forloop.first == true %}
+    fa-minus
+  {% else %}
+    fa-plus
+  {% endif %}
+{% endcapture %}
+{% capture expand %}
+  {% if articles and forloop.index == 2 or blocks and forloop.first == true %}
+    is-expanded
+  {% endif %}
+{% endcapture %}
+
+
+<li class="accordion-item{% if expand %}
+ {{ expand }}
+ {% endif %}">
+  <a href="javascript:void(0)" class="js-accordion-trigger">
+
+    {% unless blocks %}
+      {% if item contains '<hr class="accordion-title">'}
+        {% assign item_title = item | split: '<hr class="accordion-title">' %}
+        {% assign title_first = item_title | remove: item_title[0] %}
+        {% assign title = title_first | remove: item_title[2] %}
+
+        {{ title }}
+      {% else %}
+        {{ item | truncatewords: 3 }}
+      {% endif %}
+    {% else %}
+      {{ item.settings.title }}
+    {% endunless %}
+    {% if section.settings.show_icon %}
+      <i class="{{ icon_class }} {{ icon_type }} pull-right" aria-hidden="true"></i>
+    {% endif %}
+  </a>
+  <hr>
+  <div class="submenu">
+    {% assign show = false %}
+    {% unless blocks %}
+      {% if item contains '<hr class="accordion-title">' %}
+        {% assign accordionContent = item | split: '<hr class="accordion-title">' %}
+        {% if item contains '<!--columns-->' %}
+          {% assign show = true %}
+          {% include 'accordion-columns' %}
+        {% else %}
+          <p>{{ accordionContent[1] | rstrip }}</p>
+        {% endif %}
+      {% else %}
+        {{ item }}
+      {% endif %}
+    {% else %}
+      {{ item.settings.content }}
+    {% endunless %}
+  </div>
+</li>

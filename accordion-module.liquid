@@ -1,0 +1,126 @@
+{% comment %}
+{% endcomment %}
+
+{% if template == 'product' %}
+  {% assign desc = product.description %}
+{% else %}
+  {% assign desc = page.content %}
+{% endif %}
+
+{% assign articles = desc | split: '<!--accordion-->'  %}
+{% assign blocks = section.settings.dynamic_blocks %}
+
+{% comment %}
+check to see if there is an accordion html comment or dynamic_blocks are active, if there isn't then do nothing.
+{% endcomment %}
+{% if articles contains '<!--accordion-->' or section.settings.dynamic_blocks or section.settings.static_blocks %}
+
+  <section id="section-{{ section.id }}" class="accordion-container" data-section-id="{{ section.id }}">
+    <ul class="accordion">
+
+      {% if blocks %}
+        {% assign items = blocks %}
+      {% else %}
+        {% assign items = articles %}
+      {% endif %}
+
+      {% for item in items %} {% comment %} Start description accordion and get forloop {% endcomment %}
+
+        {% if articles and forloop.first == true %}
+          {% continue %} {% comment %} If first item is true skip it and display next item. {% endcomment %}
+        {% else %}
+
+          {% include 'accordion-blocks' %}
+
+        {% endif %}
+
+      {% endfor %} {% comment %} End forloop and stop loop {% endcomment %}
+      {% comment %} If static blocks are active {% endcomment %}
+      {% if section.settings.static_blocks %}
+
+          {% include 'static-blocks' %}
+
+      {% endif %}
+
+    </ul>
+  </section>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "accordion-module",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Accordion Type"
+    },
+    {
+      "type": "checkbox",
+      "id": "dynamic_blocks",
+      "label": "Activate dynamic blocks",
+      "info": "If you activate this will replace the content accordion.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Accordion Icon"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Display an accordion icon",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "fa_version",
+      "label": "Font-Awesome version",
+      "info": "Select what version of font-awesome is being used on the site.",
+      "default": "5",
+      "options": [
+        {
+          "value": "5",
+          "label": "Version 5"
+        },
+        {
+          "value": "4",
+          "label": "Version 4"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "fa_type",
+      "label": "Font-Awesome 5 font weight",
+      "info": "If using the free version do not select pro.",
+      "default": "fas",
+      "options": [
+        {
+          "value": "fas",
+          "label": "Solid"
+        },
+        {
+          "value": "far",
+          "label": "Regular"
+        },
+        {
+          "value": "fal",
+          "label": "Light (Pro)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Static Accordion"
+    },
+    {
+      "type": "checkbox",
+      "id": "static_blocks",
+      "label": "Activate static blocks",
+      "info": "If you activate static blocks the content will only be editiable in code view.",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

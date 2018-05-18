@@ -1,0 +1,46 @@
+{% capture icon_class %} {% comment %} Capture the font-awesome version select {% endcomment %}
+  {% if section.settings.fa_version == 5 %}
+    {{ section.settings.fa_type }}
+  {% else %}
+    fa
+  {% endif %}
+{% endcapture %}
+{% capture icon %} {% comment %} Capture is there is <!--accordion--> or whether blocks are active. If they are make icon a plus if not turn first li icon into a minus. {% endcomment %}
+  {% unless articles contains '<!--accordion-->' or section.settings.dynamic_blocks  %}
+    fa-minus
+  {% else %}
+    fa-plus
+  {% endunless %}
+{% endcapture %}
+{% capture expand %} {% comment %} Capture is there is <!--accordion--> or whether blocks are active. If there are then do nothing but is there isn't make first li expanded. {% endcomment %}
+  {% unless articles contains '<!--accordion-->' or section.settings.dynamic_blocks  %}
+    is-expanded
+  {% endunless %}
+{% endcapture %}
+
+<li class="accordion-item{% if expand %}
+ {{ expand }}
+ {% endif %}">
+  <a href="javascript:void(0)" class="js-accordion-trigger">
+    Lorem Ipsum
+    {% if section.settings.show_icon %}
+      <i class="{{ icon_class }} {{ icon }} pull-right" aria-hidden="true"></i>
+    {% endif %}
+  </a>
+  <hr>
+  <div class="submenu">
+    <p>Nulla vitae elit libero, a pharetra augue.</p>
+  </div>
+</li>
+<li class="accordion-item">
+  <a href="javascript:void(0)" class="js-accordion-trigger">
+    Pellentesque Ridiculus
+    {% if section.settings.show_icon %}
+      <i class="{{ icon_class }} fa-plus pull-right" aria-hidden="true"></i>
+    {% endif %}
+  </a>
+  <hr>
+  <div class="submenu">
+    <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+  </div>
+</li>
