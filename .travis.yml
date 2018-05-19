@@ -13,15 +13,45 @@ sudo: false
 # @link http://about.travis-ci.org/docs/user/languages/php/
 language: ruby
 
+rvm:
+  - 2.1
+  - 2.2
+  - 2.3
+  - 2.4
+  - 2.5
+  - ruby-head
+  - jruby-head
+#  - rbx-2
+
+addons:
+  apt:
+    packages:
+    - libgmp3-dev
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
+
+
 # Use this to prepare the system to install prerequisites or dependencies.
 # e.g. sudo apt-get update.
 # Failures in this section will result in build status 'errored'.
 # before_install:
 
+install:
+  - gem install rainbow -v 2.2.1
+  - bundle install
+
 # Use this to prepare your build for testing.
 # e.g. copy database configurations, environment variables, etc.
 # Failures in this section will result in build status 'errored'.
+before_script:
 
+- if [[ "$SNIF"]]
+# Install ESLint: ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
+# @link https://eslint.org/docs/user-guide/getting-started
+- if [[ "$SNIFF" == "1" ]]; then npm install -g eslint; fi
 # Install JSCS: JavaScript Code Style checker.
 # @link http://jscs.info/
 - if [[ "$SNIFF" == "1" ]]; then npm install -g jscs; fi
@@ -29,11 +59,16 @@ language: ruby
 # @link http://jshint.com/docs/
 - if [[ "$SNIFF" == "1" ]]; then npm install -g jshint; fi
 
+bundle exec rake
+
 # Run test script commands.
 # Default is specific to project language.
 # All commands must exit with code 0 on success. Anything else is considered failure.
 script:
-    # Run the theme through JSHint.
+    # Run moduale through ESLint.
+     Run the theme through ESLint.
+    - if [[ "$SNIFF" == "1" ]]; then eslint .; fi
+    # Run moduale through JSHint.
     - if [[ "$SNIFF" == "1" ]]; then jshint .; fi
-    # Run the theme through JavaScript Code Style checker.
+    # Run moduale through JavaScript Code Style checker.
     - if [[ "$SNIFF" == "1" ]]; then jscs .; fi
